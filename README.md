@@ -1,2 +1,2 @@
 # plp-exercises
-Lista de exercícios para disciplina de Paradigmas de Linguagem de Programação - Mestrado Ufscar.
+Listas de exercícios para disciplina de Paradigmas de Linguagem de Programação - Mestrado Ufscar.
