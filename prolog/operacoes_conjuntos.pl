@@ -7,7 +7,7 @@ conjunto([X|Y],[X|Z]):-del_todas(X,Y,L), conjunto(L,Z).
 
 inter(L1,L2,R):-conjunto(L1,R1),conjunto(L2,R2),intersec(R1,R2,R).
 
-intersec([],_,[]):-!.
+intersec([],_,[]):- !.
 intersec([X|Y],L2,[X|Z]):-member(X,L2),intersec(Y,L2,Z), !.
 intersec([X|Y],L2,Z):-intersec(Y,L2,Z).
 
