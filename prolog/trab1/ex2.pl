@@ -22,10 +22,18 @@ conta_elem(X,[X|Y],N):- conta_elem(X,Y,N1), N is N1 + 1, !.
 % conta_elem(X,[X1|Y],N):- is_list(X1), conta_elem(X,X1,N1), conta_elem(X,Y,N2), N is N1+N2, !.
 conta_elem(X,[X1|Y],N):- X \== X1, conta_elem(X,Y,N).
 
-% A regra conta_todos conta todos os elementos de uma lista dada em todos os
-% níveis e mostra o resultado numa lista.
+tamanho([],0):- !.
+tamanho([_|Cauda],N):- tamanho(Cauda,N1), N is N1 + 1.
 
-conta_todos([],[]):- !.
-conta_todos([X|Y],[[X,Count]|G]):- conta_elem(X,Y,N), Count is N + 1, del_todas_ocorr(X,Y,Z), conta_todos(Z,G).
+monta_lista([],[]):- !.
+monta_lista([[X|Y]|Cauda],[[X,Count]|Cauda2]):- tamanho(Y, N), Count is N + 1, monta_lista(Cauda,Cauda2).
 
-conta(LIn,LOut):- dispar(LIn,R), conta_todos(R,LOut).
+grup_elem([],[]):- !.
+grup_elem([X,X|Cauda],Z):- grup_elem([[X,X]|Cauda],Z), !.
+grup_elem([[X|Cauda1]|[X|Cauda2]],Z):- grup_elem([[X,X|Cauda1]|Cauda2],Z), !.
+grup_elem([X|Cauda1],[[X]|Cauda2]):- not(is_list(X)), grup_elem(Cauda1,Cauda2), !.
+grup_elem([X|Cauda1],[X|Cauda2]):- grup_elem(Cauda1,Cauda2).
+
+conta_consec(LIn,Lout):- grup_elem(LIn,R), monta_lista(R,Lout).
+
+% //tem que considerar todos os tipos incluinddo variaveis e estruturas --. estruturas está considerando, falta considerar variaveis
