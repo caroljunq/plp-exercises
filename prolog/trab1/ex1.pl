@@ -24,17 +24,11 @@ conta_elem(X,[X1|Y],N):- X \== X1, conta_elem(X,Y,N).
 % A regra conta_todos conta todos os elementos de uma lista dada em todos os
 % níveis e mostra o resultado numa lista.
 
-
-
 conta_todos([],[]):- !.
-conta_todos([X|Y], Z):- is_list(X), conta_todos(X,R), conta_todos(Y,R2), append(R,R2,Z), !.
+conta_todos([[]|Y],[[[],Count]|G]):- Y \= [], conta_elem([],Y,N), Count is N + 1, del_todas_ocorr([],Y,R), conta_todos(R,G), !.
+conta_todos([X|Y], Z):- X \= [], is_list(X), conta_todos(X,R), conta_todos(Y,R2), append(R,R2,Z), !.
 conta_todos([X|Y],[[X,Count]|G]):- conta_elem(X,Y,N), Count is N + 1, del_todas_ocorr(X,Y,Z), conta_todos(Z,G).
 
-% conta_todos([],_):- !.
-% conta_todos([[]|Y],[[[],Count]|G]):- Y \= [], conta_elem([],Y,N), Count is N + 1, del_todas_ocorr([],Y,Z), conta_todos(Z,G).
-% conta_todos([X|_], Z):- is_list(X), conta_todos(X,Z), !.
-% conta_todos([X|Y],[[X,Count]|G]):- conta_elem(X,Y,N), Count is N + 1, del_todas_ocorr(X,Y,Z), conta_todos(Z,G).
-% //falta contar o vazio como elementos
-%quando ele termina de contar sublist não conta último
+conta(LIn,LOut):- conta_todos(LIn,LOut).
 
-conta(LIn,LOut):- conta_todos(R,LOut).
+% estou perto
