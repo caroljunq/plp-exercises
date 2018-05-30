@@ -282,3 +282,132 @@ int * iPtr = new int[numTests];
 Javascript
 Lista = [56.1 7.8 43.5 5.6]
 ```
+
+**cont. sobre atributos da variável**
+### Escopo
+* onde variável é visível
+* Local e não local
+
+```
+#include <stdio.h>
+#include <conio.h>
+//declaração de variáveis globais
+// ---------------- Funçao main()-------------------
+int main(void)
+{
+ //declaração das variáveis locais da main()
+ return(0);
+}
+// -------------------------------------------------
+void funcao1(variáveis locais de parâmetros)
+{ // declaração das variáveis locais da função1
+ return;
+}
+```
+#### Escopo estático (léxico)
+* Escopo das variáveis pode ser ESTÁTICO (ANTES DA EXECUÇÃO)
+* Amarrações feitas em tempo de compilação
+* 2 categorias de ling. com escopo estático:
+  * subprogramas podem ser aninhados, criando escopos estáticos aninhados ex: Pascal e Javascript, PHP, C
+  * subprogramas não podem ser aninhados, escopos aninhados são criados por classes aninhadas e blocos
+
+
+![](aninhados.png)
+
+* Quando uma variável é referenciada, seus atributos são
+determinados pelo comando em que ela é declarada
+* Quando uma variável é referenciada em um subprograma, sua
+declaração é procurada nesse subprograma.
+* Se não for encontrada, a busca continua no subprograma onde
+esse mais interno foi definido (pai estático), e assim por diante.
+
+
+![](aninhados2.png)
+
+```
+Em C
+#include <stdio.h>
+void main() {
+  int i = 0;
+  int x = 10;
+  while (i++ < 100) {
+    float x = 3.231;
+    printf("x = %f\r\n", x * i);
+  }
+}
+```
+
+(![](c-escopo.png)
+
+![](estatico-c.png)
+
+##### Regras de escopo
+* Uma variável é visível na unidade em que foi declarada
+e nas internas, a menos que tenha sido redefinida.
+* Uma nova declaração da mesma variável em uma
+unidade mais interna **esconde a definição anterior**;
+* Em ADA, variáveis escondidas, de escopos mais gerais,
+podem ser acessadas com referências seletivas: P1.x
+
+##### Blocos (seções de código)
+* Algumas linguagens permitem que blocos tenham suas variáveis Locais
+* são variáveis dinâmicas de pilha
+* em C blocos estão entre { }
+* **Escopos criados por blocos, que podem estar aninhados, são tratados
+exatamente da mesma maneira que aqueles criados por subprogramas.**
+* Algumas ling. C++ e Java, permitem que variáveis sejam definidas em qualquer lugar do bloco
+
+```
+01: int a = 13;
+02: void f() {
+03: int b = a; // Referência à variável do ponto 1
+04: int a = 2;
+05: b = b + a; // Referência à variável do ponto 4
+06: }
+```
+
+* O escopo dessas variáveis é do ponto em que são
+definidas até o final do bloco (ou função) em que
+aparecem.
+
+#### Escopo global
+* variáveis definidas fora das funções
+* visíveis em todas as Funções
+* C, C++, PHP, Python
+* ** Uma variável global em C é implicitamente visível em todas as funções subsequentes do arquivo, exceto naquelas que tem uma definição local para uma variável com mesmo nome**
+
+#### Amarração Dinâmica a escopo ou Escopo Dinâmico --> importante pra caramba
+* O escopo é definido em função da execução do programa. O efeito de uma declaração se estende até que uma nova declaração com o mesmo nome seja encontrada.
+
+![](amarracao3.png)
+
+* Baseado na sequência de ativação (chamadas) do programa
+* amarrações em tempo de execução
+* DESVANTAGENS
+  * verificação de tipos em tempos de execução;
+  * pouca legibilidade;
+  * acesso lento a variáveis não locais
+
+![](escopo-dinamico.png)
+
+**REFERENTE A IMAGEM ANTERIOR IMPORTANTÍSSIMO** -->
+  * As referências a um identificador não podem ser identificadas na compilação
+  * Sequência - big, sub2, sub1 --> a referência a x em sub1 é ao X declarado em sub2
+  * Sequência - big - sub1 --> a referência a x em sub1 é ao x declarado em big
+
+### Ambiente de referência
+* É a coleção de todas as variáveis que são visíveis no comandos
+* O ambiente de referência de um comando em
+uma linguagem de escopo estático é formado
+pelas variáveis declaradas no seu escopo local
+mais as declaradas nos escopos ancestrais que
+são visíveis
+* Conjuntos de todos os nomes visíveis em uma determinada instrução ou ponto do programa
+
+![](ada.png)
+
+![](c.png)
+
+![](ref1.png)
+
+![](ref2.png)
