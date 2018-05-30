@@ -195,11 +195,11 @@
     ((null l) nil)
     ((atom (car l))
       (cond
-        ((equal e1 (car l)) (cons e2 (subTodos e1 e2 (cdr l))))
+        ((equal e1 (car l)) (append (list e2 e1) (subTodos e1 e2 (cdr l))))
         (t (cons (car l) (subTodos e1 e2 (cdr l))))
       )
     )
-    (t (cons (subTodos e1 e2 (car l)) (subTodos e1 e2 (cdr l))))
+    (t (append (list (subTodos e1 e2 (car l))) (subTodos e1 e2 (cdr l))))
   )
 )
 
@@ -339,12 +339,41 @@
 
 (defun monta-pares (el l)
   (cond ((null l) nil)
-    (t (cons (list el (car l)) (monta-pares el (cdr l))))
+    (t (append (list (list el (car l))) (monta-pares el (cdr l))))
   )
 )
 
 (defun cartesiano (c1 c2)
   (cond ((null c1) nil)
     (t (append (monta-pares (car c1) c2) (cartesiano (cdr c1) c2)))
+  )
+)
+
+(defun nivel (l)
+  (cond
+    ((null l) 1)
+    ((atom l) 0)
+    (t (max (+ 1 (nivel (car l))) (nivel (cdr l))))
+  )
+)
+
+(defun contaOcc (el l)
+  (do ((aux l (cdr aux)) (count 0))
+    ((null aux) count)
+    (if (equal (car aux) el) (setq count (+ 1 count)))
+  )
+)
+
+; (defun ocorrencias (l)
+;   (do ((aux l (cdr aux)) (res ()))
+;     ((null aux) res)
+;     (setq res (append res (list (list (car aux) (contaOcc (car aux) l))))))
+;     (setq aux (apagaIt (car aux) (cdr aux)))
+; )
+
+(defun ocorrencias (l)
+  (cond
+    ((null l) nil)
+    (t (append (list (list (car l) (contaOcc (car l) l))) (ocorrencias (apagaIt (car l) (cdr l)))))
   )
 )
