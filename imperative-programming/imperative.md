@@ -28,6 +28,7 @@ saber a sequência com que serão executados os processos ou o que está acontec
   * Execução
 * **Variável dinâmica de heap explicíta**: programador faz alocação e desalocação
 * **Variável dinâmica de heap implícita:** programador não faz nada
+* PAREI TEM QUE CONTINUAR PREENCHENDO
 
 ### Variáveis
 Abstração de célula(s) de memória --> não é célula física (1byte), célula abstrata tem o tamanho necessário para o tipo da variável.
@@ -376,17 +377,22 @@ aparecem.
 * C, C++, PHP, Python
 * ** Uma variável global em C é implicitamente visível em todas as funções subsequentes do arquivo, exceto naquelas que tem uma definição local para uma variável com mesmo nome**
 
-#### Amarração Dinâmica a escopo ou Escopo Dinâmico --> importante pra caramba
+#### Amarração Dinâmica a escopo --> importante pra caramba SERÁ QUE É ESCOPO DINÂMICO, pelo vi é sim ??
 * O escopo é definido em função da execução do programa. O efeito de uma declaração se estende até que uma nova declaração com o mesmo nome seja encontrada.
 
 ![](amarracao3.png)
 
+#### Escopo Dinâmico
+
+* Vai tendo escopo do último lugar que foi chamado
 * Baseado na sequência de ativação (chamadas) do programa
 * amarrações em tempo de execução
 * DESVANTAGENS
   * verificação de tipos em tempos de execução;
   * pouca legibilidade;
   * acesso lento a variáveis não locais
+  *
+![](c.png)
 
 ![](escopo-dinamico.png)
 
@@ -405,8 +411,6 @@ são visíveis
 * Conjuntos de todos os nomes visíveis em uma determinada instrução ou ponto do programa
 
 ![](ada.png)
-
-![](c.png)
 
 ![](ref1.png)
 
