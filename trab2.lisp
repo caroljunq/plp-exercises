@@ -1,36 +1,10 @@
-(defun cnt (LIn)
-    (conta_todos (despar LIn)))
+(defun cnt (LIn) (if (null LIn) nil (conta_todos (car LIn) 1 (cdr LIn))))
 
-(defun despar (lst)
-  (cond ((null lst) nil)
-        ((atom (car lst)) (cons (car lst) (despar (cdr lst))))
-        (t (append (despar (car lst)) (despar (cdr lst))))))
-
-(defun conta_elem (x lst)
-  (let ((counter 0))
-    (dolist (el lst counter) (if (equal x el) (setq counter (+ 1 counter))))
-  )
-)
-
-(defun elimina_rep (lst)
-    (let ((pilha))
-        (loop for elem in lst
-            do
-            (if (not (member elem pilha))
-                (setq pilha (append (list elem) pilha)))) pilha))
-
-; ----------------exer1
-(defun conta_todos (lst)
-    (let ((pilha (elimina_rep lst)))
-      (do ((aux pilha (cdr aux)) (Lout '()))
-        ((null aux) Lout)
-        (setq Lout (append Lout (list (list (car aux) (conta_elem (car aux) lst)))))
-      )
-    )
-)
-; ------------------------
-; ex2:
-
-; _-------------------------
-; ex3:
-; _-------------------------
+(defun conta_todos (topo n lista)
+	(if (null lista)
+		(list (list n topo))
+		(let ((prox (car lista)))
+			(if (equal prox topo)
+				(conta_todos topo (+ n 1) (cdr lista))
+				(cons (list n topo)
+					(conta_todos prox 1 (cdr lista)))))))

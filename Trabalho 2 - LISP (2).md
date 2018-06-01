@@ -84,64 +84,51 @@ Saída: ((4.322 1) (NIL 3) (MARIA 2) (4.3222 1) (JOAO 2) (4 1) (2 2) (A 2) (1 1)
 ### Código
 
 ```
-(defun cnt (lst)
-	(if (consp lst)
-		(conta_todos (car lst) 1 (cdr lst))
-		lst))
+(defun cnt (LIn) (if (null LIn) nil (conta_todos (car LIn) 1 (cdr LIn))))
 
-(defun conta_todos (elt n lst)
+(defun conta_todos (topo n lst)
 	(if (null lst)
-		(list (conta_elem elt n))
-		(let ((next (car lst)))
-			(if (eql next elt)
-				(conta_todos elt (+ n 1) (cdr lst))
-				(cons (conta_elem elt n)
-					(conta_todos next 1 (cdr lst)))))))
-
-(defun conta_elem (elt n)
-	(if (> n 0)
-		(list n elt)
-		elt))
-
+		(list (list n topo))
+		(let ((prox (car lst)))
+			(if (equal prox topo)
+				(conta_todos topo (+ n 1) (cdr lst))
+				(cons (list n topo)
+					(conta_todos prox 1 (cdr lst)))))))
 ```
 
 ### Descrição dos Predicados
-* **cnt:** recebe uma lista como entrada para contagem.
-* **conta_todos:** conta as todas as ocorrências de elementos em uma lista.
-* **conta_elem:** conta os elementos da lista.
+* **cnt:** recebe uma lista como entrada para contagem. Se a lista for vazia, retorna "nil", se não, passa o topo da lista, a contagem inicial 1 e a cauda da lista para a função "conta_todos";
+* **conta_todos:** é uma função recursiva que recebe os parâmetros e retorna a lista com o formato desejado no exercício. Primeiro, essa função verifica se o parâmetro "lst" é vazio, se sim, retorna o par "contagem e topo". Se a verificação anterior for falsa, obtém-se o topo da lista em "prox". Se o topo da lista atual é igual ao próximo elemento, continua a contagem com "conta_todos", passando como parâmetro o topo, contagem atual somado de 1 e a cauda da lista. Se o topo é diferente do próximo concatena-se o par "contador 'n' e topo da lista" com a lista resultante de "conta_todos" (que recebe a cauda da lista da iteração atual).
 
 
 ### Casos teste
 
-* **Caso Exemplo:** [a,a,a,a,b,c,c,a,a,d,e,e,e,e]
+* **Caso Exemplo:** (a a a a b c c a a d e e e e)
 
 ```
-?- (print (cnt '(a a a a b c c a a d e e e e)))
-Lout = ((4 A) (1 B) (2 C) (2 A) (1 D) (4 E))
+Comando: (cnt '(a a a a b c c a a d e e e e))
 
-```
-
-* **Caso 1:** (a a (c c) (c c) ((c c)) d e e e e)
-
-```
-?- (print (cnt '(a a (c c) (c c) ((c c)) d e e e e)))
-Lout = ((2 A) (1 (C C)) (1 (C C)) (1 ((C C))) (1 D) (4 E))
+Saída: ((4 A) (1 B) (2 C) (2 A) (1 D) (4 E))
 
 ```
 
-* **Caso 2:** (() a b z x 4.6 () (a x) (5 (() (() a x)) z x) ())
+* **Caso 1:** (a a (JOANA JOANA) () d (1 2) e e (1 2) () ((JOANA JOANA)) d e e e)
 
 ```
-?- (print (cnt '(() a b z x 4.6 () (a x) (5 (() (() a x)) z x) ())))
-Lout = ((1 NIL) (1 A) (1 B) (1 Z) (1 X) (1 4.6) (1 NIL) (1 (A X)) (1 (5 (NIL (NIL A X)) Z X)) (1 NIL))
+Comando: (cnt '(a a (JOANA JOANA) () d (1 2) e e (1 2) () ((JOANA JOANA)) d e e e))
+
+Saída: ((2 A) (1 (JOANA JOANA)) (1 NIL) (1 D) (1 (1 2)) (2 E) (1 (1 2)) (1 NIL)
+ (1 ((JOANA JOANA))) (1 D) (3 E))
 
 ```
 
-* **Caso 3:** (((( () (() b)))) a a a a (b c) c a a (d e) e e e)
+* **Caso 2:** (((( () (() b)))) 4.32 4.32 4.322 4.3222 (b c) c JOAO JOAO (d e) e e e)
 
 ```
-?- (print (cnt '(((( () (() b)))) a a a a (b c) c a a (d e) e e e)))
-Lout = ((1 (((NIL (NIL B))))) (4 A) (1 (B C)) (1 C) (2 A) (1 (D E)) (3 E))
+Comando: (cnt '(((( () (() b)))) 4.32 4.32 4.322 4.3222 (b c) c JOAO JOAO (d e) e e e))
+
+Saída: ((1 (((NIL (NIL B))))) (2 4.32) (1 4.322) (1 4.3222) (1 (B C)) (1 C) (2 JOAO)
+ (1 (D E)) (3 E))
 
 ```
 
