@@ -1,0 +1,30 @@
+(defun cnt (lst)
+    (conta_todos (despar lst)))
+
+(defun despar (lst)
+  (cond ((null lst) nil)
+        ((atom (car lst)) (cons (car lst) (despar (cdr lst))))
+        (t (append (despar (car lst)) (despar (cdr lst))))))
+
+
+(defun conta_elem (x lst)
+  (let ((counter 0))
+    (dolist (el lst counter) (if (equal x el) (setq counter (+ 1 counter))))
+  )
+)
+
+(defun conta_todos (lst)
+    (let ((pilha (elimina_rep lst)))
+      (do ((aux pilha (cdr aux)) (Lout '()))
+        ((null aux) Lout)
+        (setq Lout (append Lout (list (list (car aux) (conta_elem (car aux) lst)))))
+      )
+    )
+)
+
+(defun elimina_rep (lst)
+    (let ((pilha))
+        (loop for elem in lst
+            do
+            (if (not (member elem pilha))
+                (push elem pilha))) pilha))e
