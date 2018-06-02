@@ -138,49 +138,45 @@ Saída: ((1 (((NIL (NIL B))))) (2 4.32) (1 4.322) (1 4.3222) (1 (B C)) (1 C) (2 
 ### Código
 
 ```
-(defun monta_lista (lst)
-	(if (null lst)
-		nil
-		(let ((elt (car lst))
-			(cdr (monta_lista (cdr lst))))
-		(if (consp elt)
-			(append (apply #'pega_elem elt)
-				cdr)
-			(cons elt cdr)))))
+(defun monta_lista (LIn)
+	(if (null LIn) nil
+		(let ((el (car LIn))
+			(Lout (monta_lista (cdr LIn))))
+			(append (apply #'pega_elem el) Lout))))
 
-(defun pega_elem (n elt)
-	(if (zerop n)
-		nil
-		(cons elt (pega_elem (- n 1) elt))))
+(defun pega_elem (n el)
+	(if (equal n 0) nil
+		(cons el (pega_elem (- n 1) el))))
 
 ```
 
 ### Descrição de Predicados
-* **pega_elem:** para cada valor de quantidade de elementos, repete o elemento decrescendo até 0.
-* **monta_lista:** a partir no formato de lista de entrada do exercício, gera uma lista com sublistas.
+* **pega_elem:** para cada quantidade "n" e elemento "el", repete o elemento "n" vezes (de n a 0);
+* **monta_lista:** recursivamente, gera uma lista no formato desejado no exercício. Primeiro verifica se LIn é vazia, se verdadeiro retorna nil. Se LIn não é vazia, pega o topo da lista (par "quantidade de repetições e elemento") e atribui o valor inicial de Lout como sendo a lista resultante de "monta_lista" aplicado sobre a cauda da LIn. Por fim, aplica no par do topo de LIn a função pega_elem, e concatena a lista retornada com Lout.
 
 ### Casos teste
 * **Caso Exemplo:** ((4 a) (1 b) (2 c) (2 a) (1 d) (4 e))
 
-
 ```
-?- (print (monta_lista '((4 a) (1 b) (2 c) (2 a) (1 d) (4 e))))
-Lout = (A A A A B C C A A D E E E E)
+Comando: (monta_lista '((4 a) (1 b) (2 c) (2 a) (1 d) (4 e)))
 
-```
-
-* **Caso 1:** ((1 ()) (1 A) (1 B) (1 Z) (1 X) (1 4.6) (1 ()) (1 (A X)) (1 (5 () Z X)) (1 ()))
-
-```
-?- (print (monta_lista '((1 ()) (1 A) (1 B) (1 Z) (1 X) (1 4.6) (1 ()) (1 (A X)) (1 (5 () Z X)) (1 ()))))
-Lout = (NIL A B Z X 4.6 NIL (A X) (5 NIL Z X) NIL)
+Saída: (A A A A B C C A A D E E E E)
 
 ```
 
-* **Caso 2:** ((1 (((() (() B))))) (4 A) (1 B) (2 C) (2 A) (1 D) (4 E))
+* **Caso 1:** ((2 ()) (1 A) (3 JOAO) (1 Z) (1 X) (3 4.6) (1 ()) (1 (A X)) (2 (5 () Z X)) (1 ()))
 
 ```
-?- (print (monta_lista '((1 (((() (() B))))) (4 A) (1 B) (2 C) (2 A) (1 D) (4 E))))
-Lout = ((((NIL (NIL B)))) A A A A B C C A A D E E E E)
+Comando: (monta_lista '((2 ()) (1 A) (3 JOAO) (1 Z) (1 X) (3 4.6) (1 ()) (1 (A X)) (2 (5 () Z X)) (1 ())))
+
+Saída: (NIL NIL A JOAO JOAO JOAO Z X 4.6 4.6 4.6 NIL (A X) (5 NIL Z X) (5 NIL Z X) NIL)
+```
+
+* **Caso 2:** ((1 (((() (() B))))) (4 999) (1 A) (1 MARIA) (2 (((())))) (1 ()) (2 C) (2 A) (1 3) (4 1))
+
+```
+Comando: (monta_lista '((1 (((() (() B))))) (4 999) (1 A) (1 MARIA) (2 (((())))) (1 ()) (2 C) (2 A) (1 3) (4 1)))
+
+Saída: ((((NIL (NIL B)))) 999 999 999 999 A MARIA (((NIL))) (((NIL))) NIL C C A A 3 1 1 1 1)
 
 ```
