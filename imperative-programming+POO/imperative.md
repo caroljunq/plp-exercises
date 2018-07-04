@@ -28,7 +28,11 @@ saber a sequência com que serão executados os processos ou o que está acontec
   * Execução
 * **Variável dinâmica de heap explicíta**: programador faz alocação e desalocação
 * **Variável dinâmica de heap implícita:** programador não faz nada
-* PAREI TEM QUE CONTINUAR PREENCHENDO
+* **Escopo**: onde variável é visível
+* **Escopo estático** amarrações feitas em tempo de compilação
+* **Escopo global** variaveis fora das funções
+* **Escopo Dinâmica** vai tendo escopo do último lugar que foi chamado
+* **Amiente de Referência** coleção de todas as variáveis visíveis no comando
 
 ### Variáveis
 Abstração de célula(s) de memória --> não é célula física (1byte), célula abstrata tem o tamanho necessário para o tipo da variável.
@@ -415,3 +419,346 @@ são visíveis
 ![](ref1.png)
 
 ![](ref2.png)
+
+
+### Verificação de Tipo
+* Certifica-se que operandos (parametros, variáveis) e operadores (aritméticos, relacionais, subprogramas) são compatíves
+* Exs:
+  * subprogramas e parametros int func(int x){...}
+  * atribuição (operador) e variveis (operandos) x = y + z
+* Os operandos são aceitos se:
+  * aceitos pelo operadores
+  * podem ser convertidos implicitamente pelo compilador (**COERÇÃO**)
+  * **ERRO TIPO**: operador aplicado a um operando inapropriado.
+
+#### Verificação de tipo estática
+* feita antes da execução
+* amarração de tipo estática permite quase sempre a verificação de tipo estática (em tempo de compilação);
+* VANTAGEM: detecção derros em tempo de compilaão, menor custo
+* DESVANTAGEM: redução de flexibilidade para o programador
+
+#### Verificação de tipo dinâmica
+* durante execução do programa
+* amarração do tipo dinâmica exige verificação do tipo dinâmica - tipo da variável é feita durante execução através de atribuição ex: JS
+* unions, record variante (ada e pascal) --> verificação dinâmica deve ser feita quando a mesma posição de memória pode armazenar valores de tipos diferentes em momentos diferentes durante a execução
+* O tamanho da union é o do maior objeto
+
+### Tipagem forte
+* Ling é fortemente tipada se pode identificar erro de tipos ou em tempo de execução ou compilação.
+* Pascal, C , C++ não são, unions e records variantes não são checadas
+* ADA quase é
+
+### Conversão de tipo
+* **COERÇÃO**: implicita, compilador, Fortran, C, C++
+* **CASTING**: explicita, progrmador, ada, java, C#
+
+```
+Java permite esse tipo de coerção
+int a;
+float d,b;
+
+b = d*a
+```
+
+```
+Em ADA dá ruim, erro de tipo
+A : Integer;
+B, C, D : Float;
+....
+C := B * A;
+
+```
+
+### Estruturas de controle
+* determinam fluxo de execução (que comando é executado depois do outro)
+* em nível de comando
+* em nível de **unidades**
+  * mecanimos que permitem fazer chamadas a unidades **explicitas** (funções), **implícitas** (exceção, corrotinas, unidades concorrentes)
+* **Unidades subordinadas chamadas explicitamente**
+  * função - abstrai uma expressão a ser avaliada
+    * retornam valores
+    * ex: fatoral(n)
+  * procedimento -abstrai comando a ser executado
+    * modifica variáveis
+    * ex: ordena(v)
+```
+PASCAL:
+function <nome da função> ( <lista de argumentos> ) : <tipo>;
+< corpo da função>
+end
+procedure <nome> (<parâmetros>);
+<corpo>
+End
+```
+
+### Parâmetros
+  * **Formal** identificadores usados na definição da função
+  * **Real** identificadores usados na chamada
+  * **Argumento** ou real, ou valor passado do real para o formal
+
+#### Correspondência entre Parâmetros Formais e Reais
+* uso do critério posicional para amarração de argumentos: S(p1,p2,...,pn) --> chamada S(a1,a2,...,n)
+
+#### Passagem de parâmetros
+##### Passagem por Referências (sharing ou call by reference)
+* passagem do endereço do argumento
+* cara em termos de processamento, pois acesso é indireto
+* a variável usada como argumento é **compartilhada e pode ser modificada**
+
+![ ](passagem_ref.png)
+
+![passagem-ref-c](passagem-ref-c.png)
+
+![ref-c](ref-c.png)
+
+![cpp](cpp.png)
+
+##### Passagem por Cópia
+* os parâmetros se comportam como variáveis locais
+* custo de memória, pois se for elementos de comprimento grande
+* Tipos:
+  * **Por Valor:** argumentos iniciam parâmetros, que funcionam como variáveis locais.
+![porvalor](porvalor.png)
+
+  * **de Resultado:** parâmetros não recebem valores na chamada, funcionam como variáveis locais mas retornam valores de saída.
+  * **de Valor-Resultado:** engloba os dois anteriores --> tem o mesmo efeito que a passagem por referência, semântica idêntica a de passagem por referência, exceto quanto os parâmetros reais envolvem arrays ou expressões
+
+  ![valor1](valor1.png)
+
+  ![valor2](valor2.png)
+
+  ![res](res.png)
+
+  ![res2](res2.png)
+
+  ![res3](res3.png)
+
+  ![res4](res4.png)
+
+##### Passagem de Nome
+* a amarração do parâmetro à posição não é feita na hora da chamada, mas a cada vez que ele é usado na unidade chamada. Portanto, atribuições ao mesmo parâmetro podem ser feitas a posições diferentes a cada ocorrência
+* Parametro real substitui textualmente o parametro formal correspondente em todas as ocorrencias
+* Param. formal é amarrado ao método de acesso no momento chamada mas a amarração a valor ou endereço é
+feita só na hora que o parâmetro é atribuído ou referenciado.
+* adia o cálculo de um argumento até ele seja realmente utilizado no procedimento
+* objetivo flexibilidade
+* mais lento
+
+```
+Algol --> final List[1] = 3, list[2] = 5
+procedure BIGSUB;
+integer GLOBAL;
+integer array LIST [1:2];
+procedure SUB (PARAM);
+  integer PARAM;
+  begin
+  PARAM := 3;
+  GLOBAL := GLOBAL + 1;
+  PARAM := 5
+  end;
+begin
+LIST [1] := 2;
+LIST[2] := 2;
+GLOBAL := 1;
+SUB(LIST [GLOBAL])
+end;
+```
+![nome](nome.png)
+
+* ak é recalculado durante loop, pois k muda sempre
+* ex: sum(i,1,100,v[i]) soma dos primeiros 100 primeiros termos de array
+* soma de inteiros sum(i,1,100,i)
+* soma de quadrados de inteiros sum(i,1,100,i*i)
+
+### Sinônimia
+
+```
+Programa em sintaxe semelhante ao C:
+int i = 3; /* i é uma variável global */
+void fun (int a, int b) {
+ i = b;
+}
+void main( ) {
+ int list [10];
+ list [i] = 5;
+ fun(i, list[i]);
+}
+```
+list[3] = 5
+a = ender i
+b = ender list[i]
+i = 5
+
+**O ENDEREÇO VAI E VOLTA PRO MESMO LUGAR**, copia de volta o endereço
+![ressino](ressino.png)
+![valorsino](valorsino.png)
+
+
+## Subprogramas
+* reuso de código
+* facilita leitura
+* economia tempo e memória
+* único ponto de entrada
+* UNIDADE CHAMADORA suspensa durante execução da chamada, único programa em cada momento. Depois retorna pra CHAMADORA
+
+### Implementação de subprogramas
+* **Ligação de subprograma:**  operação de chamada e retorno de subprograma
+* Ações associadas a chamada da função:
+  * passagem parâmetro;
+  * variáveis locais não estáticas: alocar memória para variáveis locais declaradas no subprograma e associar as variáveis as suas memórias
+  * salva status do subprograma chamador (status CPU, ponteiro ambiente)
+  * transferir controle para subprograma chamado
+  * garantir que retorno volte ao ponto certo após execução da função
+  * se linguagem tiver subprogramas aninhados ou escopo global, garantir acesso a variáveis não Locais
+* Ações relacionadas a retorno da função:
+  * caso seja passagem por cópia, copiar valores dos parametros formais para os reais;
+  * desalocar memoria das variáveis locais;
+  * restauras status de execução da unidade chamadora
+  * retonna controle para unidade chamadora
+
+* necessidade de guardar infos não código;
+
+ AGORA:
+ * ling. escopo estático
+ * variáveis locais dinâmicas de pilha
+ * sem subprograma aninhado
+
+### Registro de Ativação
+* formato das informações não código que devem ser armazenadas durante a ativação
+* //guarda **informações não código** durante chamada, execução e retorno de uma função
+* **Pilha de execução** : guarda informações sobre ativações de subprogramas
+* **Ativação** chamada da função
+* **Instância de RA** coleção de particular de dados na forma de RA
+
+  * **Formato Layout):**
+  * determina quais as informações fazem parte do RA
+  * conhecido em tempo de compilação
+
+* **Tamanho:**
+  * pode mudar quando variáveis locais tem tamanho variável (arrays)
+  * conhecido em tempo de compilação quando as variáveis locais tem tamanho fixo
+  * ADA --> tamanho do arrays locais depende de um parâmetro real
+
+![RA](rA.png)
+
+* **Endereço de Retorno** --> ponteiro para instrução seguinte à chamada da função
+* **Vínculo Dinâmico** --> ponteiro para a base do RA do chamador. Em escopo estático,
+utilizado para recuperar informação em tempo de execução quando ocorre erro. Em escopo dinâmico, acessar variáveis não locais.
+* **Parâmetros** --> valor ou endereços fornecidos pelo chamador
+  * Passagem por valor: valores são copiado para a pilha. Posição é usada como variável
+  * Por Referência: endereço do parâmetro real na pilha
+  * Por Resultado: Posição usada como variável local. Resultado copiado no parâmetro real.
+  * Por Valor Resultado: combinação de por valor e resultado
+
+![ra-ex](ra-ex.png)
+
+### Pilha de execução
+* último chamado, primeiro terminar
+* criar instâncias de RA para funções numa Pilha
+* parte da memória usada como pilha que guarda informações sobre ativações
+* parte do sistema de execução
+* **TODA ATIVAÇÃO** de subprograma recursiva ou não cria uma nova instância de RA na pilha (cópias separadas de parâmetros, variáveis locais e endereço de retorno)
+
+### Implementação de subprogramas com variáveis locais dinâmicas de pilha
+* caracteristica: implementam recursão
+* compilador aloca e libera implicitamente memória
+* pode haver múltiplas RA para o mesmo subprogramas
+* instâncias de RA criadas dinamicamente
+
+### Ponteiro de Ambiente de Execução (PE)
+* usado para acessar variáveis locais e parâmetros durante a execução de um subprograma
+* inicialmente aponta para a base do RA principal
+* durante execução aponta para a base do RA (base da função) do subprograma que está sendo executado
+* quando subprograma é chamado, PE atual é armazenado no novo RA como vínculo dinâmico
+* novo valor de PE passa a ser base do novo RA criado
+* quando ocorre retorno do subprograma, o ponteiro do topo da pilha é redefinido para o valor atual de PE menos 1
+* o novo valor de PE passa a ser o valor do vínculos dinâmico do RA do suprograma que acabou de ser executado do subprograma que acabou de ser executado é removido da pilha
+
+### Ações executadas durante processo de ligação pela unidade chamadora
+* Ações da unidade chamadora:
+  * cria instância do RA
+  * salva status da execução da unidade de programa corrente
+  * calcula e passa parametros
+  * passa endereço de retorno para o chamado
+  * transfere controle para o chamado
+
+* Ações da unidade chamada:
+  * salva o PE anterior na pilha como link dinâmico e cria o novo valor
+  * aloca memória para variáveis locais
+  * se passagem for por resultado ou valor resultado, copia esses valores nos parâmetros reais;
+  * se o subprograma for uma função, move o valor funcional para um local acessível pelo chamador
+  * restaurar o ponteiro da pilha (topo) atribuindo  o valor atual de PE menos 1 e atribuindo a PE o valor do antigo link dinâmico;
+  * transfere controle para o chamador.
+
+
+![conteudo-pilha](conteudo-pilha.png)
+
+![continuacao](continuacao.png)
+
+### Funções
+* o formato de RA para funções inclui o valor que a função retorna
+![funcoes](funcoes.png)
+
+
+![funcao_retr](funcao_retr.png)
+
+![p1](p1.png)
+
+![p3](p3.png)
+
+![p4](p4.png)
+
+![p5](p5.png)
+
+
+### Subprogramas aninhados
+- Python, JS, PASCAL
+* em um dado subprograma apenas as variáveis declaras em escopos de antecessores estáticos são visíveis e podem ser acessadas
+* um subprograma é "chamável" apenas quado seus antecessores estáticos estão ativos
+* Variáveis não locais (definidas em unidades mais externas) precisam ser acessadas e podem estar em subprogramas diferentes;
+* variáveis não locais estão em RAs que já oram criados e estão em algum lugar da pilha
+* para referẽncia não locais em linguagens de escopo estático é necessário encontrar todos os RA na pilha que corresponem aos ancestrais estáticos do subprograma;
+
+### Encadeamento estático
+* maneira de implementar escopo estático em linguagens e funções aninhadas
+* Uso do **Vínculo estático:** ponteiro que aponta para a base do RA do pai estático do subgprograma e é utilizado para acessar variáveis não locais;
+* **Encadeamento Estático** sequencia de vínculos estáticos que conectam RAs de subprogramas aninhados. Ocorre a ligação de cada RA aos seus ancestrais estáticos;
+
+#### Encontrando referências não locais
+* quando é feita uma referência a um variável não local, os ponteiros estáticos são percorridos até encontrar um RA que contenha essa variável;
+* Alternativamente, como o aninhamento de escopos é conhecido em
+tempo de compilação, o compilador pode determinar o tamanho da
+cadeia a ser seguida para acessar a variável
+
+### Vínculo Estático
+* Em algumas lingagens o RA possui o Vínculo Estático
+* **VíNCULO ESTÀTICO --> liga-se com a base do pai estático mais próximo**
+
+![vestaticos](vestaticos.png)
+
+![vepilha](vepilha.png)
+
+### Blocos aninhados
+* em C, e algumas outras linguagens, é permitido que haja variáveis para blocos. O tempo de vida delas começa quando entra no bloco e termina quando sai do bloco.
+
+```
+{
+  int temp;
+  temp = list[upper];
+  list[upper] = list[lower];
+  list[lower] = temp;
+}
+```
+* VANTANGENS: não há conflito de nome de variável;
+* o encadeamento estático pode ser usado em bloco aninhados, pois blocos são subprogramas sem parâmetros
+* uma instância de RA é criada toda vez que o bloco é executado
+
+* alternativa mais eficiente do que o encadeamento estático
+
+* O espaço necessário para o bloco pode ser alocado após as variáveis locais
+e acessados como se fossem variáveis locais, pois:
+  * O tamanho do bloco é conhecido estaticamente
+  * Blocos são iniciados e concluídos de forma textual
+
+
+![blocos](blocos.png)

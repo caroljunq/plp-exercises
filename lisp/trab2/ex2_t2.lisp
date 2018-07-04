@@ -1,4 +1,4 @@
-; ex2
+; exercicio 2 lisp
 (defun cnt (LIn) (if (null LIn) nil (conta_todos (car LIn) 1 (cdr LIn))))
 
 (defun conta_todos (topo n lst)
